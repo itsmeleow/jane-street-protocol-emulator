@@ -1,42 +1,31 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+# Jane Street Protocol Emulator ASIC
 
-# Tiny Tapeout Verilog Project Template
+A programmable peripheral impersonator for generating normal traffic and controlled faults. UART, SPI and I²C are the core targets; 10 Mbit/s Ethernet is a gated research track.
 
-- [Read the documentation for project](docs/info.md)
+The implementation includes a **synthesizable PE-v0 engine**, writable instruction memory, bounded FIFOs, input synchronization, tick divider and UART program loader. Example programs cover UART TX, mode-0 SPI, an I²C address probe and a reactive SPI peripheral. Top-level tests upload programs through UART pins and exercise normal and deliberately corrupt responses.
 
-## What is Tiny Tapeout?
+## Run the architecture experiment
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+Python 3.10+; no third-party packages needed for these commands:
 
-To learn more and get started, visit https://tinytapeout.com.
+```sh
+python3 -m unittest discover -s tests -v
+python3 -m tools.assembler programs/uart_tx.asm -o /tmp/uart_tx.hex
+python3 -m tools.reference programs/uart_tx.asm --tx 0x55 --ticks 170 > /tmp/uart_tx.csv
+```
 
-## Set up your Verilog project
+The UART program runs indefinitely and waits on an empty FIFO after sending the byte; the CLI stops at the requested trace length. Interactive input examples are exercised by the test harness.
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+- [RTL integration, host packet format and verification](docs/rtl.md)
+- [Experimental ISA, timing contract and limitations](docs/isa-v0.md)
+- [Architecture and implementation milestones](docs/target-implementation.md)
+- [Instructions for repository agents](AGENTS.md)
+- [RTL simulation setup](test/README.md)
 
-The GitHub action will automatically build the ASIC files using [LibreLane](https://www.zerotoasiccourse.com/terminology/librelane/).
+The model tests check instruction boundaries/stalls, every UART byte's bit timing, a mode-0 SPI exchange, I²C ACK/NACK and clock stretching, and command-selected SPI reply corruption. They do not establish physical operating rates, complete protocol coverage, or ASIC fit.
 
-## Enable GitHub actions to build the results page
+## Tiny Tapeout
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+This repository uses the IHP CMOS5L Tiny Tapeout scaffold and 6×4 tile allocation. From `test`, run `make -B` for top-level loading/execution tests and `make -B -f Makefile.engine` for differential engine tests. Generic synthesis is reproducible with `yosys -Q -T -s scripts/synth.ys` from the root. PDK mapping, layout and timing closure remain outstanding. RTL simulation needs Icarus Verilog and the packages in `test/requirements.txt`; the included devcontainer supplies a development environment.
 
-## Resources
-
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
-
-## What next?
-
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-  - Bluesky [@tinytapeout.com](https://bsky.app/profile/tinytapeout.com)
+Learn more at [Tiny Tapeout](https://tinytapeout.com).

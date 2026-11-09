@@ -11,3 +11,10 @@ test/sim_build
 test/__pycache__/
 test/results.xml
 test/gate_level_netlist.v
+
+# Python architecture tools and tests
+__pycache__/
+*.py[cod]
+
+# Separate RTL regression result files
+test/*_results.xml

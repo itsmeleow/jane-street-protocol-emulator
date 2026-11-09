@@ -1,0 +1,5 @@
+# Generic synthesis only: no PDK cell area or routed timing claims.
+read_verilog -sv src/project.sv src/engine.sv src/fifo.sv src/uart.sv src/host_control.sv
+synth -top tt_um_itsmeleow_protocol_emulator
+check -assert
+stat

@@ -1,29 +1,33 @@
 # Tiny Tapeout project information
 project:
-  title:        ""      # Project title
-  author:       ""      # Your name
-  discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  ""      # One line description of what your project does
-  language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
+  title:        "jane-street-protocol-emulator"
+  author:       "Leo Wang (itsmeleow)"
+  discord:      "1eow"
+  description:  "Programmable pin engine with UART program loader and reactive protocol examples"
+  language:     "SystemVerilog"
+  clock_hz:     0
 
   # How many tiles your design occupies? A single tile is about 202x155 uM.
-  tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2, 8x2, 3x4, 4x4, 5x4, 6x4 or 8x4
+  tiles: "6x4"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2, 8x2, 3x4, 4x4, 5x4, 6x4 or 8x4
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_example"
+  top_module:  "tt_um_itsmeleow_protocol_emulator"
 
   # List your project's source files here.
   # Source files must be in ./src and you must list each source file separately, one per line.
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - "project.v"
+    - "project.sv"
+    - "engine.sv"
+    - "fifo.sv"
+    - "uart.sv"
+    - "host_control.sv"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
   # Inputs
-  ui[0]: ""
+  ui[0]: "HOST_UART_RX"
   ui[1]: ""
   ui[2]: ""
   ui[3]: ""
@@ -33,7 +37,7 @@ pinout:
   ui[7]: ""
 
   # Outputs
-  uo[0]: ""
+  uo[0]: "HOST_UART_TX"
   uo[1]: ""
   uo[2]: ""
   uo[3]: ""
@@ -43,14 +47,14 @@ pinout:
   uo[7]: ""
 
   # Bidirectional pins
-  uio[0]: ""
-  uio[1]: ""
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
-  uio[5]: ""
-  uio[6]: ""
-  uio[7]: ""
+  uio[0]: "PROTO_0"
+  uio[1]: "PROTO_1"
+  uio[2]: "PROTO_2"
+  uio[3]: "PROTO_3"
+  uio[4]: "PROTO_4"
+  uio[5]: "PROTO_5"
+  uio[6]: "PROTO_6"
+  uio[7]: "PROTO_7"
 
 # Do not change!
 yaml_version: 6
